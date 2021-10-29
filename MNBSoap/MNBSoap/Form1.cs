@@ -18,14 +18,28 @@ namespace MNBSoap
     public partial class Form1 : Form
     {
         BindingList<RateData> Rates = new BindingList<RateData>();
+        BindingList<string> currencies = new BindingList<string>();
         public Form1()
         {
             InitializeComponent();
+            cbxValuta.DataSource = currencies;
+            MNBArfolyamServiceSoapClient mnbService = new MNBArfolyamServiceSoapClient();
+            GetCurrenciesRequestBody request = new GetCurrenciesRequestBody();
+            var response = mnbService.GetCurrencies(request);
+            string result = response.GetCurrenciesResult;
+            XmlDocument vxml = new XmlDocument();
+            vxml.LoadXml(result);
+            foreach (XmlElement item in vxml.DocumentElement.FirstChild.ChildNodes)
+            {
+                currencies.Add(item.InnerText);
+            }
+            
             RefreshData();
         }
 
         private void RefreshData()
         {
+            if (cbxValuta.SelectedItem == null) return;
             Rates.Clear();
             string xmlstring = Consume();
             LoadXml(xmlstring);
@@ -59,6 +73,7 @@ namespace MNBSoap
                 RateData r = new RateData();
                 r.Date = DateTime.Parse(item.GetAttribute("date"));
                 XmlElement child = (XmlElement)item.FirstChild;
+                if (child == null) continue;
                 r.Currency = child.GetAttribute("curr");
                 r.Value = decimal.Parse(child.InnerText);
                 int unit = int.Parse(child.GetAttribute("unit"));
@@ -70,6 +85,7 @@ namespace MNBSoap
 
         string Consume()
         {
+           
             MNBArfolyamServiceSoapClient mnbService = new MNBArfolyamServiceSoapClient();
             GetExchangeRatesRequestBody request = new GetExchangeRatesRequestBody();
             request.currencyNames = cbxValuta.SelectedItem.ToString(); //"EUR";
