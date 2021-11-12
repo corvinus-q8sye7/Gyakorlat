@@ -17,12 +17,16 @@ namespace SantaFactory
     public partial class Form1 : Form
     {
         List<Toy> _toys = new List<Toy>();
+        Toy _nextToy;
+        
         private IToyFactory _toyFactory;
 
         public IToyFactory ToyFactory
         {
             get { return _toyFactory; }
-            set { _toyFactory = value; }
+            set { _toyFactory = value;
+                DisplayNext();
+            }
         }
 
         public Form1()
@@ -58,6 +62,26 @@ namespace SantaFactory
                mainPanel.Controls.Remove(oldestToy);
                _toys.Remove(oldestToy);
             }
+        }
+
+        private void btnCar_Click(object sender, EventArgs e)
+        {
+            ToyFactory = new CarFactory();
+        }
+
+        private void btnBall_Click(object sender, EventArgs e)
+        {
+            ToyFactory = new BallFactory();
+        }
+
+        private void DisplayNext()
+        {
+            if (_nextToy != null)
+                this.Controls.Remove(_nextToy);
+            _nextToy = ToyFactory.CreateNew();
+            _nextToy.Top = lblNext.Top + lblNext.Height + 20;
+            _nextToy.Left = lblNext.Left;
+            this.Controls.Add(_nextToy);
         }
     }
 }
