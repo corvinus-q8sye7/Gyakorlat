@@ -34,7 +34,7 @@ namespace SantaFactory
 
         private void createTimer_Tick(object sender, EventArgs e)
         {
-            var ball = BallFactory.CreateNew();
+            Ball ball = (Ball)BallFactory.CreateNew();
             _balls.Add(ball);
             mainPanel.Controls.Add(ball);
             ball.Left = -ball.Width;
