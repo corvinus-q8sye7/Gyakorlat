@@ -47,6 +47,12 @@ namespace UnitTestExample.Test
             Assert.AreEqual(expectedResult, actualResult);
         }
 
+        [
+    Test,
+    TestCase("irf@uni-corvinus.hu", "Abcd1234"),
+    TestCase("irf@uni-corvinus.hu", "Abcd1234567"),
+]
+
         public void TestRegisterHappyPath(string email, string password)
         {
             // Arrange
